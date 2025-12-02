@@ -1,0 +1,38 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+char longest[1000] = "";   // store longest word
+int longest_len = 0;       // store its length
+%}
+
+%%
+
+[A-Za-z]+   {
+                int len = yyleng;       // length of the matched word
+                if(len > longest_len){  // if this word is longer
+                    longest_len = len;  // update longest length
+                    strcpy(longest, yytext);  // store the longest word
+                }
+            }
+
+.|\n        ;      /* ignore all other characters */
+
+%%
+
+int main() {
+    yylex();   // start scanning input
+    printf("Longest word: %s\n", longest);
+    printf("Length: %d\n", longest_len);
+    return 0;
+}
+
+int yywrap(){
+    return 1;  // tells lex that input is finished
+}
+
+
+//run
+lex practical1.l
+gcc lex.yy.c -o practical1
+./practical1

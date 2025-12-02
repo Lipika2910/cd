@@ -1,0 +1,75 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int yylex();                     // ADDED
+int yyerror(const char *s);      // ADDED
+
+int a_count = 0;                 // count of a's
+%}
+
+%token A B
+
+%%
+
+S :
+      STRING B '\n'
+        {
+            if(a_count >= 10)
+                printf("Valid string\n");
+            else
+                printf("Invalid string (needs >=10 a's)\n");
+
+            a_count = 0; // reset counter for next input
+        }
+    | error '\n'
+        {
+            printf("Invalid string\n");
+            yyerrok;
+            a_count = 0;
+        }
+    ;
+
+STRING :
+      A          { a_count++; }
+    | STRING A   { a_count++; }
+    ;
+
+%%
+
+int main() {
+    printf("Enter string: ");
+    yyparse();
+    return 0;
+}
+
+int yyerror(const char *s) {
+    return 0;   // suppress default error message
+}
+
+
+//lex
+%{
+#include "y.tab.h"
+%}
+
+%%
+
+"a"     { return A; }
+"b"     { return B; }
+\n      { return '\n'; }
+.       ;     // ignore any other character
+
+%%
+
+int yywrap() { return 1; }
+
+
+
+//run
+yacc practical10.l
+yacc -d practical10.l
+lex practical10.l
+cc y.tab.c lex.yy.c -ll
+./a.out
+

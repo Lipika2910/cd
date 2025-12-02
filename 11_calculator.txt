@@ -1,0 +1,80 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+
+int yylex();
+int yyerror(const char *s);
+%}
+
+%token NUMBER
+
+%left '+' '-'
+%left '*' '/'
+
+%%
+
+input:
+    input line
+  | /* empty */
+  ;
+
+line:
+    expr '\n'   { printf("Result = %d\n", $1); }
+  | '\n'
+  ;
+
+expr:
+      NUMBER
+    | expr '+' expr    { $$ = $1 + $3; }
+    | expr '-' expr    { $$ = $1 - $3; }
+    | expr '*' expr    { $$ = $1 * $3; }
+    | expr '/' expr    { 
+                          if ($3 == 0) {
+                              printf("Error: Division by zero!\n");
+                              $$ = 0;
+                          } else {
+                              $$ = $1 / $3;
+                          }
+                        }
+    | '(' expr ')'      { $$ = $2; }
+    ;
+
+%%
+
+int main() {
+    printf("Enter expression:\n");
+    yyparse();
+    return 0;
+}
+
+int yyerror(const char *s) {
+    printf("Syntax error!\n");
+    return 0;
+}
+
+
+//lex
+
+%{
+#include "y.tab.h"
+#include <stdio.h>
+%}
+
+%%
+[0-9]+      { yylval = atoi(yytext); return NUMBER; }
+[\t ]+      ;        // ignore spaces
+\n          { return '\n'; }
+.           { return yytext[0]; }
+%%
+
+int yywrap() {return 1;}
+
+
+//run
+yacc practical10.l
+yacc -d practical10.l
+lex practical10.l
+cc y.tab.c lex.yy.c -ll
+./a.out
+
+

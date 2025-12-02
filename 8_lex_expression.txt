@@ -1,0 +1,45 @@
+%{
+#include <stdio.h>
+int valid = 1;
+%}
+
+/* Regular Definitions */
+DIGIT       [0-9]
+LETTER      [a-zA-Z]
+ID          ({LETTER}|_)({LETTER}|{DIGIT}|_)*
+NUMBER      {DIGIT}+
+OP          [+\-*/]
+WS          [ \t\n]+
+
+%%
+
+{ID}                { }
+{NUMBER}            { }
+{OP}                { }
+"("                 { }
+")"                 { }
+{WS}                { }
+.                   { valid = 0; }
+
+%%
+
+int yywrap(){ return 1; }
+
+int main()
+{
+    printf("Enter an expression: ");
+    yylex();
+
+    if (valid)
+        printf("\nValid Arithmetic Expression\n");
+    else
+        printf("\nInvalid Arithmetic Expression\n");
+
+    return 0;
+}
+
+
+//run
+lex practical8.l
+gcc lex.yy.c -o practical8
+./practical8

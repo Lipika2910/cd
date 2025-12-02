@@ -1,0 +1,36 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+[a-z] {
+    char c = yytext[0];
+    c = ((c - 'a' + 3) % 26) + 'a';
+    putchar(c);
+}
+
+[A-Z] {
+    char c = yytext[0];
+    c = ((c - 'A' + 3) % 26) + 'A';
+    putchar(c);
+}
+
+.      { putchar(yytext[0]); }
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
+
+
+//run
+lex practical1.l
+gcc lex.yy.c -o practical1
+./practical1

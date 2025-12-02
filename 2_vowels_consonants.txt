@@ -1,0 +1,30 @@
+%{
+
+#include<stdio.h>
+int ccnt =0;
+int vowel =0;
+int other =0;
+%}
+
+
+%%
+[aeiouAEIOU] vowel++;
+[a-zA-Z] ccnt++;
+. other++;
+%%
+int yywrap(){
+ printf("End of Input \n");
+ return 1;}
+
+int main(int argc,char* argv[]){
+yylex();
+printf("\nNumber of Consonants  letters : %d\n", ccnt);
+printf("\n Number of Vowels letters : %d\n", vowel);
+printf("\n Others : %d\n", other);
+return 0; }
+
+
+//run
+lex practical1.l
+gcc lex.yy.c -o practical1
+./practical1

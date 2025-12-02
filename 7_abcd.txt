@@ -1,0 +1,30 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+.   {
+        char str[] = "abcd";
+        for (int i = 4; i > 0; i--) {
+            for (int j = 0; j < i; j++) {
+                printf("%c", str[j]);
+            }
+            printf("\n");
+        }
+        exit(0);
+    }
+%%
+
+
+int yywrap(){
+return 1;}
+
+int main() {
+    yylex();
+    return 0;
+}
+
+//run
+lex practical1.l
+gcc lex.yy.c -o practical1
+./practical1

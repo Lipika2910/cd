@@ -1,0 +1,32 @@
+%{
+#include<stdio.h>
+int line=0;
+int other =0;
+%}
+
+%%
+. other++;
+\n line++;
+%%
+
+int main(int argc, char *argv[]){
+        if(argc==2){
+        yyin = fopen(argv[1], "r");
+       if (yyin)
+         yylex();}
+
+printf("\n NUMBER OF CHARACTERS  : %d\n", other);
+printf("NUMBER OF LINES : %d\n",line );
+return 0; }
+
+
+int yywrap(){
+ printf("End of Input \n");
+ return 1;}
+
+
+//run
+lex practical1.l
+gcc lex.yy.c -o practical1
+./practical1
+

@@ -1,0 +1,67 @@
+%{
+#include<stdio.h>
+#include<ctype.h>
+#include<stdlib.h>
+
+int yylex(void);
+int yyerror(const char *s);
+%}
+
+%token num let
+%left '+' '-'
+%left '*' '/'
+
+%%
+
+stmt:
+      stmt '\n'   { printf("\n valid expression\n"); exit(0); }
+    | expr
+    | 
+    | error '\n'  { printf("\n invalid..\n"); exit(0); }
+;
+
+expr:
+      num
+    | let
+    | expr '+' expr
+    | expr '-' expr
+    | expr '*' expr
+    | expr '/' expr
+    | '(' expr ')'
+;
+
+%%
+
+int main()
+{
+    printf("enter expression: ");
+    yyparse();
+    return 0;
+}
+
+int yylex()
+{
+    int ch;
+    while ((ch=getchar())==' ');   // skip spaces
+
+    if (isdigit(ch))
+        return num;
+
+    if (isalpha(ch))
+        return let;
+
+    return ch;
+}
+
+int yyerror(const char *s)
+{
+    printf("%s\n", s);
+    return 0;
+}
+
+
+
+//run
+yacc practical9.y
+cc y.tab.c -ll 
+./a.out
