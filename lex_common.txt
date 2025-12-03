@@ -1,0 +1,212 @@
+%{
+#include <stdio.h>
+%}
+
+/*  
+   Universal Lex Program Template  
+   Just uncomment the pattern you need and comment/remove the rest.
+*/
+
+%%
+
+/**************** REGULAR EXPRESSIONS ****************/
+
+/* 1. L = {a, b, c} */
+^(a|b|c)$          { printf("MATCHED: %s\n", yytext); }
+
+/* 2. L = {dad} */
+^dad$              { printf("MATCHED: %s\n", yytext); }
+
+/* 3. L = c* */
+^c*$               { printf("MATCHED: %s\n", yytext); }
+
+/* 4. L = specific words */
+^(abccb|abcbc|aacbcb|aacbbc)$   { printf("MATCHED: %s\n", yytext); }
+
+/* 5. L = all b's or all c's */
+^(b+|c+)$          { printf("MATCHED: %s\n", yytext); }
+
+/* 6. L = even length (a|b)* */
+^([ab]{2})*$       { printf("MATCHED: %s\n", yytext); }
+
+/* 7. L = ab b+ cc a{3,} */
+^abb+ccaaa+$       { printf("MATCHED: %s\n", yytext); }
+
+/* 8. L contains substring baab */
+.*baab.*           { printf("MATCHED: %s\n", yytext); }
+
+/* 9. L contains at least one aa */
+.*aa.*             { printf("MATCHED: %s\n", yytext); }
+
+/* 10. Even a's then odd b's */
+^(aa)*(b(b)*)$     { if(strlen(yytext)%2==1) printf("MATCHED: %s\n", yytext); }
+
+/* 11. Contains baa AND aaba */
+^(?=.*baa)(?=.*aaba).*   { printf("MATCHED: %s\n", yytext); }
+
+/* 12. Odd number of b's */
+^[ab]*b([ab]*b[ab]*b)*$  { printf("MATCHED: %s\n", yytext); }
+
+/* 13. Number of a’s divisible by 3 */
+^b*(ab*ab*ab*)*$    { printf("MATCHED: %s\n", yytext); }
+
+/* 14. No more than one aa */
+^([^a]|a(?!a))*aa?([^a]|a(?!a))*$   { printf("MATCHED: %s\n", yytext); }
+
+/* 15. Contains neither aa nor bb */
+^(ab|ba)*a?$        { printf("MATCHED: %s\n", yytext); }
+
+/* 16. Does NOT contain aaa */
+^(a(?!aa)|b)*$      { printf("MATCHED: %s\n", yytext); }
+
+/* 17. Exactly one aaa */
+^(a(?!aa)|b)*aaa(a(?!aa)|b)*$   { printf("MATCHED: %s\n", yytext); }
+
+/* 18. all aa must appear before any bb */
+^(aa)*a*(bb)*b*$    { printf("MATCHED: %s\n", yytext); }
+
+/* 19. Does not contain bab */
+^(?!.*bab)[ab]*$    { printf("MATCHED: %s\n", yytext); }
+
+/**************** DEFAULT RULES ****************/
+
+.|\n  { /* ignore other inputs */ }
+
+%%
+
+int yywrap() { return 1; }
+
+int main() {
+    printf("Enter a string:\n");
+    yylex();
+    return 0;
+}
+
+
+
+------------------------------------------
+
+// one reg
+%{
+#include <stdio.h>
+%}
+
+%%
+
+((a|b)(a|b))*      { printf("Even length string: %s\n", yytext); }
+
+.|\n               ;
+
+%%
+
+int yywrap() { return 1; }
+
+int main() {
+    yylex();
+    return 0;
+}
+
+
+----------------------------------------------------------------
+
+%{
+#include <stdio.h>
+%}
+
+%%
+
+/* ---------------------- REGULAR EXPRESSIONS ---------------------- */
+/* Keep ONLY ONE of the following lines based on the question        */
+/* Delete the remaining ones                                         */
+
+a*b                     { printf("MATCH: %s\n", yytext); }
+(a|b)b*a                { printf("MATCH: %s\n", yytext); }
+((ac)*b)|(acd*)         { printf("MATCH: %s\n", yytext); }
+(ab|aabb)*              { printf("MATCH: %s\n", yytext); }
+
+.*a.*b.*                { printf("Contains at least one a and one b: %s\n", yytext); }
+.*abab.*                { printf("Contains substring abab: %s\n", yytext); }
+([^a]|ba)*              { printf("Each 'a' is preceded by 'b': %s\n", yytext); }
+
+b(c*c)(b)?              { printf("1 b and odd number of c's: %s\n", yytext); }
+
+((bb)*(cc)*)|((cc)*(bb)*)  { printf("Even b's and even c's: %s\n", yytext); }
+
+(a{4})*                 { printf("Number of a's divisible by 4: %s\n", yytext); }
+
+.*ab.*ba.*|.*ba.*ab.*   { printf("Contains both ab and ba: %s\n", yytext); }
+
+((aa)*(bb)*)|((bb)*(aa)*)   { printf("a's (mod 2) = b's (mod 2): %s\n", yytext); }
+
+(a|b)*((ab)|(ba))*      { printf("Contains neither aa nor bb: %s\n", yytext); }
+
+(a|b)*(ba)              { printf("Ends with ba: %s\n", yytext); }
+(a|b)*(baaa)            { printf("Ends with baaa: %s\n", yytext); }
+
+(bb|bba)*(a)            { printf("Matches (bb | bba)*a : %s\n", yytext); }
+
+/* ---------------------- END OF REGULAR EXPRESSIONS ---------------------- */
+
+\n      ;       /* ignore newline */
+.       ;       /* ignore any other character */
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    yylex();
+    return 0;
+}
+
+
+
+
+--------------------------------------------------
+%{
+#include <stdio.h>
+%}
+
+%%
+
+/* ---------------------- SELECT YOUR PATTERN ----------------------
+   Uncomment ONLY the pattern you want to use in exam.
+------------------------------------------------------------------*/
+
+/* L = (ab|aab) */
+// (ab|aab)        { printf("MATCHED: %s\n", yytext); }
+
+/* L = (a|b)*aabab */
+// (a|b)*aabab     { printf("MATCHED: %s\n", yytext); }
+
+/* L = (ac|aca)* */
+// (ac|aca)*       { printf("MATCHED: %s\n", yytext); }
+
+/* L = a*(ab)*a* */
+// a*(ab)*a*       { printf("MATCHED: %s\n", yytext); }
+
+/* L = ((ab|aab)*a*)* */
+// ((ab|aab)*a*)*  { printf("MATCHED: %s\n", yytext); }
+
+/* L = {w ∈ {a,b}* : contains bb or bab} */
+// (.*(bb|bab).*)  { printf("MATCHED: %s\n", yytext); }
+
+/* L = ((a*b*a*)*b)* */
+// ((a*b*a*)*b)*   { printf("MATCHED: %s\n", yytext); }
+
+/* L = (ba|b)*|(bb|a)* */
+// (ba|b)*|(bb|a)* { printf("MATCHED: %s\n", yytext); }
+
+/* Default rule */
+.|\n              { /* Ignore others */ }
+
+%%
+
+int yywrap() { return 1; }
+
+int main() {
+    yylex();
+    return 0;
+}
